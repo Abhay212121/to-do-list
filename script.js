@@ -3,7 +3,7 @@ let listItemsBg = document.querySelector('.sidebar')
 let bannerHead = document.querySelector('.banner-head')
 let newProjectBtn = document.querySelector('#project-submit-btn')
 let allItems = document.querySelector('.all-items')
-let addBtn;
+let addBtn, cancelBtn;
 
 
 let newProjectBtnCount = 1;
@@ -37,17 +37,24 @@ function addNewProjectBox() {
   </div>`
     allItems.append(div);
     addBtn = document.querySelector('.btn1');
-    handlingTheNewAddBtn(div)
+    cancelBtn = document.querySelector('.btn2')
+    handlingTheNewBtns(div)
 }
 
-function handlingTheNewAddBtn(div) {
+function handlingTheNewBtns(div) {
     addBtn.addEventListener('click', () => {
         newProjectBtnCount = 1
         let val = document.querySelector('#new-project-inputbox').value
         addingNewDynamicItemInList(val)
         div.remove()
     })
+    cancelBtn.addEventListener('click', () => {
+        newProjectBtnCount = 1
+        div.remove()
+    })
 }
+
+
 
 function addingNewDynamicItemInList(val) {
     let div = document.createElement('div');
@@ -69,6 +76,10 @@ function addingNewDynamicItemInList(val) {
     allItems.append(div)
 }
 
-
+listItems.forEach((item) => {
+    item.addEventListener('click', () => {
+        bannerHead.textContent = item.textContent
+    })
+})
 
 
