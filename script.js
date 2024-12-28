@@ -1,4 +1,5 @@
 let listItems = document.querySelectorAll('.item')
+// let lowerListItems = document.querySelectorAll('.lower-item')
 let listItemsBg = document.querySelector('.sidebar')
 let bannerHead = document.querySelector('.banner-head')
 let newProjectBtn = document.querySelector('#project-submit-btn')
@@ -6,9 +7,104 @@ let allItems = document.querySelector('.all-items')
 let addBtn, cancelBtn;
 let dropBoxBtns = document.querySelectorAll('.more-options')
 let dropBox = document.querySelector('.dropbox')
-let lowerSideBarListItems = document.querySelectorAll('.lower-item')
+let burgerBtn = document.querySelector('.menu-icon')
+let sidebar = document.querySelector('.sidebar')
 let dropboxDiv;
+let selectedDiv = document.querySelector('.upper-sidebar').children[1]
 
+
+
+//creating the database
+
+let projects = ['Work', 'Study', 'Gym']
+
+// function ProjectData(projectName) {
+//   this.projectName = projectName
+// }
+
+// function addProject(value) {
+//   const project = new ProjectData(value)
+//   projects.push(project)
+//   resetingTheLowerSidebar()
+//   fillingTheLowerSidebar(projects)
+// }
+
+
+
+//handling the top left burger button in the header
+let sidebarFlag = true
+burgerBtn.addEventListener('click', () => {
+  if (sidebarFlag) {
+    sidebar.style.display = 'none';
+    sidebarFlag = false
+  }
+  else {
+    sidebar.style.display = 'inline'
+    sidebarFlag = true
+  }
+})
+
+
+
+//removing the dropbox
+document.addEventListener('click', () => {
+  // console.log(dropboxDiv)
+  if (dropboxDiv != undefined) {
+    dropboxDiv.remove()
+  }
+})
+
+
+function moreOptionsBtnFunc() {
+  let lowerSideBarListItems = document.querySelectorAll('.lower-item')
+  lowerSideBarListItems.forEach((listItem) => {
+    listItem.lastElementChild.addEventListener('click', (e) => {
+      if (dropboxDiv == undefined) {
+        e.stopPropagation()
+        dropboxDiv = document.createElement('div')
+        dropboxDiv.classList.add('dropbox');
+        dropboxDiv.innerHTML =
+          `<div class="edit-btn">Rename</div>
+        <div class="delete-btn">Delete</div>`
+        listItem.prepend(dropboxDiv)
+      }
+      else {
+        dropboxDiv.remove()
+        e.stopPropagation()
+        dropboxDiv = document.createElement('div')
+        dropboxDiv.classList.add('dropbox');
+        dropboxDiv.innerHTML =
+          `<div class="edit-btn">Rename</div>
+        <div class="delete-btn">Delete</div>`
+        listItem.prepend(dropboxDiv)
+      }
+
+      let dropBoxDeleteBtn = document.querySelector('.delete-btn')
+      dropBoxDeleteBtn.addEventListener('click', (e) => {
+        e.stopPropagation()
+        let projectName = listItem.querySelector('.item-name').innerHTML
+        selectedDiv = document.querySelector('.upper-sidebar').children[1]
+        let filteredArray = projects.filter(e => e !== projectName)
+        projects = filteredArray
+        resetingTheLowerSidebar()
+        fillingTheLowerSidebar(projects)
+        selectingTheListItemsFunc()
+      })
+
+      let dropBoxRenameBtn = document.querySelector('.edit-btn')
+      dropBoxRenameBtn.addEventListener('click', (e) => {
+        e.stopPropagation()
+        console.log(listItem.innerHTML)
+      })
+
+
+    })
+  })
+}
+
+
+
+//adding new value inside the sidebar
 let newProjectBtnCount = 1;
 newProjectBtn.addEventListener('click', () => {
   if (newProjectBtnCount == 1) {
@@ -17,40 +113,6 @@ newProjectBtn.addEventListener('click', () => {
   }
 })
 
-document.addEventListener('click', (e) => {
-  if (dropboxDiv != undefined) {
-    dropboxDiv.remove()
-  }
-})
-
-
-lowerSideBarListItems.forEach((listItem) => {
-
-  listItem.lastElementChild.addEventListener('click', (e) => {
-    if (dropboxDiv == undefined) {
-      dropboxDiv = document.createElement('div')
-      dropboxDiv.classList.add('dropbox');
-      dropboxDiv.innerHTML =
-        `<div class="edit-btn">Rename</div>
-      <div class="delete-btn">Delete</div>`
-      listItem.prepend(dropboxDiv)
-      e.stopPropagation()
-    }
-
-    else {
-      dropboxDiv.remove()
-      dropboxDiv = document.createElement('div')
-      dropboxDiv.classList.add('dropbox');
-      dropboxDiv.innerHTML =
-        `<div class="edit-btn">Rename</div>
-      <div class="delete-btn">Delete</div>`
-      listItem.prepend(dropboxDiv)
-      e.stopPropagation()
-
-    }
-
-  })
-})
 
 function addNewProjectBox() {
   let div = document.createElement('div');
@@ -83,7 +145,9 @@ function handlingTheNewBtns(div) {
   addBtn.addEventListener('click', () => {
     newProjectBtnCount = 1
     let val = document.querySelector('#new-project-inputbox').value
-    addingNewDynamicItemInList(val)
+    projects.push(val)
+    resetingTheLowerSidebar()
+    fillingTheLowerSidebar(projects)
     div.remove()
   })
   cancelBtn.addEventListener('click', () => {
@@ -92,33 +156,65 @@ function handlingTheNewBtns(div) {
   })
 }
 
-function addingNewDynamicItemInList(val) {
-  let div = document.createElement('div');
-  div.innerHTML =
-    `<div class="item">
-    <img
-      src="images/burger-bar.png"
-      alt="icon not found"
-      class="more-options"
-    />
-    <div class="item">${val}</div>
+
+
+function fillingTheLowerSidebar(projects) {
+  projects.forEach((project) => {
+    let projectDiv = document.createElement('div')
+    projectDiv.classList.add('lower-item')
+    projectDiv.innerHTML =
+      `<img src="images/burger-bar.png" alt="icon not found" />
+    <div class="item-name">${project}</div>
     <img
       src="images/more options.png"
       alt="not found"
       class="more-options"
-    />
-  </div>`
+    />`
 
-  allItems.append(div)
+    projectDiv.addEventListener('click', (e) => {
+      e.stopPropagation()
+      selectedDiv = projectDiv
+      tempDiv.style.backgroundColor = ''
+      selectingTheListItemsFunc(project)
+    })
+    allItems.append(projectDiv)
+  })
+  moreOptionsBtnFunc()
 }
 
-// listItems.forEach((item) => {
-//   item.addEventListener('click', (e) => {
-//     e.stopPropagation()
-//     console.log(item)
-//     // bannerHead.textContent = item[2].textContent
+fillingTheLowerSidebar(projects);
+
+
+function resetingTheLowerSidebar() {
+  allItems.innerHTML = ''
+}
+
+
+// function handlingTheRenameDeleteBtns(div) {
+//   let dropBoxDeleteBtn = document.querySelector('.delete-btn')
+//   dropBoxDeleteBtn.addEventListener('click', () => {
+//     let indexOfItem =
+//       projects.pop()
+//     resetingTheLowerSidebar()
+//     fillingTheLowerSidebar(projects)
 //   })
+// }
 
-// })
+
+listItems.forEach((item) => {
+  item.addEventListener('click', () => {
+    selectedDiv = item
+    tempDiv.style.backgroundColor = ''
+    selectingTheListItemsFunc(selectedDiv.textContent)
+  })
+})
 
 
+function selectingTheListItemsFunc(name = selectedDiv.textContent) {
+  selectedDiv.style.backgroundColor = '#A0E0BB'
+  bannerHead.innerHTML = name
+  tempDiv = selectedDiv
+}
+
+let tempDiv = selectedDiv;
+selectingTheListItemsFunc(selectedDiv.textContent)

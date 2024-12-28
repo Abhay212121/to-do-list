@@ -10,9 +10,18 @@
 }
 
 .menu-icon{
-    height: 2vh;
-    width: 1.5vw;
+    height: 5vh;
+    width: 2.5vw;
+    padding: 10px;
+}
 
+.menu-icon:hover{
+    cursor: pointer;
+    background-color: #516352a2;
+    border-radius: 3px;
+}
+.menu-icon:focus{
+    outline: none;
 }
 
 .menu-icon img{
@@ -71,6 +80,21 @@
     padding: 0 1rem;
 }
 
+
+.lower-item{
+    display: flex;
+    gap: 0.5rem;
+    color: #374958;
+    font-family: "Ubuntu", serif;
+    /* justify-content: space-between; */
+    font-weight: 400;
+    align-items: center;
+    border-radius: 5px;
+    text-transform: capitalize;
+    padding:  2px 5px;
+    position: relative;
+}
+
 .item .item{
     padding: 0;
 }
@@ -80,6 +104,10 @@
     cursor: pointer;
 }
 
+.lower-item:hover{
+    background-color: lavender;
+    cursor: pointer;
+}
 
 .lower-sidebar div img{
     height:3vh;
@@ -107,7 +135,7 @@
 }
 
 
-.lower-sidebar .item :last-child{
+.lower-sidebar .lower-item :last-child{
     margin-left: auto;
     height: 3.3vh;
 }
@@ -247,8 +275,8 @@
     background-color: #F3F1F3;
     border: 3px;
     position: absolute;
-    left: 13vw;
-    top: -5.5rem; 
+    left: 14vw;
+    top: -3.5rem; 
     display: flex;
     flex-direction: column;
     /* gap: 0.5rem; */
@@ -270,3 +298,5 @@
     background-color:#c2bcc2 ;
     border-radius: 3px;
 }
+
+
