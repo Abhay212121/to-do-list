@@ -209,22 +209,22 @@
 /*adding new project button */
 
 
-.new-project-inputbox-section{
+.new-project-inputbox-section,.rename-inputbox-section{
     margin-top: 0.5rem;
     display: flex;
     flex-direction: column;
     gap: 0.8rem;
 }
 
-.new-project-inputbox-section-above{
+.new-project-inputbox-section-above,.rename-inputbox-section-above{
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
 }
 
-
-.new-project-inputbox-section-above input{
+.new-project-inputbox-section-above input,
+.rename-inputbox-section-above input{
     height: 5vh;
     padding: 5px;
     color: #374958;
@@ -235,14 +235,14 @@
     font-size: 1rem;
 }
 
-.new-project-inputbox-section-below{
+.new-project-inputbox-section-below,.rename-inputbox-section-below{
     display: flex;  
     align-items: center;
     justify-content: center;
     gap: 1rem;
 }
 
-.new-project-inputbox-section-below button{
+.new-project-inputbox-section-below button,.rename-inputbox-section-below button{
     font-size: 1rem;
     font-family: "Ubuntu", serif;
     text-transform: capitalize;
@@ -299,4 +299,7 @@
     border-radius: 3px;
 }
 
-
+.button-collection-section{
+    display: flex;
+    gap: 1rem;
+}

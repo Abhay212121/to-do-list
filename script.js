@@ -59,8 +59,9 @@ function moreOptionsBtnFunc() {
   let lowerSideBarListItems = document.querySelectorAll('.lower-item')
   lowerSideBarListItems.forEach((listItem) => {
     listItem.lastElementChild.addEventListener('click', (e) => {
+      let temp = listItem
       if (dropboxDiv == undefined) {
-        e.stopPropagation()
+        // e.stopPropagation()
         dropboxDiv = document.createElement('div')
         dropboxDiv.classList.add('dropbox');
         dropboxDiv.innerHTML =
@@ -70,7 +71,7 @@ function moreOptionsBtnFunc() {
       }
       else {
         dropboxDiv.remove()
-        e.stopPropagation()
+        // e.stopPropagation()
         dropboxDiv = document.createElement('div')
         dropboxDiv.classList.add('dropbox');
         dropboxDiv.innerHTML =
@@ -79,10 +80,10 @@ function moreOptionsBtnFunc() {
         listItem.prepend(dropboxDiv)
       }
 
+      let projectName = listItem.querySelector('.item-name').innerHTML
       let dropBoxDeleteBtn = document.querySelector('.delete-btn')
       dropBoxDeleteBtn.addEventListener('click', (e) => {
         e.stopPropagation()
-        let projectName = listItem.querySelector('.item-name').innerHTML
         selectedDiv = document.querySelector('.upper-sidebar').children[1]
         let filteredArray = projects.filter(e => e !== projectName)
         projects = filteredArray
@@ -94,10 +95,47 @@ function moreOptionsBtnFunc() {
       let dropBoxRenameBtn = document.querySelector('.edit-btn')
       dropBoxRenameBtn.addEventListener('click', (e) => {
         e.stopPropagation()
-        console.log(listItem.innerHTML)
+        let renameAndCancelBox = document.createElement('div')
+        renameAndCancelBox.classList.add('rename-inputbox-section')
+        renameAndCancelBox.innerHTML =
+          `<div class="rename-inputbox-section-above">
+          <img
+            src="images/burger-bar.png"
+            alt="icon not found"
+            class="more-options"
+          />
+          <input
+            type="text"
+            id="rename-project-inputbox"
+            value = ${projectName}
+          />
+        </div>
+        <div class="rename-inputbox-section-below">
+          <button class="btn1 rename-btn">Rename</button>
+          <button class="btn2 cancel-btn">Cancel</button>
+        </div>`
+        listItem.append(renameAndCancelBox)
+        listItem.replaceWith(renameAndCancelBox)
+
+        //new two buttons
+        let renameBtn = document.querySelector('.rename-btn')
+        renameBtn.addEventListener('click', () => {
+          renameInputboxValue = document.querySelector('#rename-project-inputbox').value
+          const index = projects.indexOf(projectName);
+          projects[index] = renameInputboxValue
+          resetingTheLowerSidebar()
+          fillingTheLowerSidebar(projects)
+        })
+
+        let cancelBtn = document.querySelector('.cancel-btn')
+        cancelBtn.addEventListener('click', () => {
+          console.log(renameAndCancelBox)
+          console.log(temp)
+          renameAndCancelBox.replaceWith(temp)
+        })
+
+
       })
-
-
     })
   })
 }
