@@ -3,7 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GoaliFY!</title>
+    <title>Procrastinot!</title>
+    <link rel="shortcut icon" href="images/fav-icon.png" type="image/x-icon" />
     <link rel="stylesheet" href="style.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -29,7 +30,8 @@
       href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap"
       rel="stylesheet"
     />
-    <script src="script.js" defer></script>
+    <!-- <script src="main.js" defer></script> -->
+    <script src="script.js" type="module" defer></script>
   </head>
   <body>
     <header class="header">
@@ -42,20 +44,20 @@
     <div class="section">
       <div class="sidebar">
         <div class="upper-sidebar">
-          <h2 class="heading">Home</h2>
-          <div class="item" id="all-tasks">
+          <h2 class="heading upper-sidebar-item">Home</h2>
+          <div class="item upper-sidebar-item" id="all-tasks">
             <img src="images/inbox.png" alt="icon not found" />
             <div class="item-name">All Tasks</div>
           </div>
-          <div class="item" id="today">
+          <div class="item upper-sidebar-item" id="today">
             <img src="images/today1.png" alt="icon not found" />
             <div class="item-name">Today</div>
           </div>
-          <div class="item" id="weekly">
+          <div class="item upper-sidebar-item" id="weekly">
             <img src="images/week2.png" alt="icon not found" />
             <div class="item-name">Next 7 Days</div>
           </div>
-          <div class="item" id="important">
+          <div class="item upper-sidebar-item" id="important">
             <img src="images/star.png" alt="icon not found" />
             <div class="item-name">Important</div>
           </div>
@@ -72,6 +74,40 @@
       <div class="main-section">
         <div class="banner">
           <div class="banner-head">random text</div>
+        </div>
+        <!-- <div class="task-section">
+          <div class="task-input-form">
+            <div class="div-task-title div-flex">
+              <label for="task-title">Title:</label>
+              <input
+                type="text"
+                id="task-title"
+                placeholder="What to do?"
+                required
+              />
+            </div>
+            <label for="task-details">Details(optional):</label>
+            <textarea
+              placeholder="Mushkil waqt Commando sakht!"
+              class="div-task-details div-flex"
+              rows="5"
+            ></textarea>
+
+            <div class="div-task-deadline div-flex">
+              <label for="task-deadline">Date:</label>
+              <input type="date" id="task-deadline" />
+            </div>
+            <div class="button-section-task-input-form">
+              <button class="btn1" id="add-button-task-input-form">Add</button>
+              <button class="btn2" id="cancel-button-task-input-form">
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div> -->
+        <div class="add-new-task">
+          <img src="images/more.png" alt="more icon" />
+          <p>Add Task</p>
         </div>
       </div>
     </div>

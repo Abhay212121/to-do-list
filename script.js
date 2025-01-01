@@ -1,3 +1,6 @@
+import Tasks from './main.js'
+
+
 let listItems = document.querySelectorAll('.item')
 let bannerHead = document.querySelector('.banner-head')
 let newProjectBtn = document.querySelector('#project-submit-btn')
@@ -17,6 +20,7 @@ let addBtn, cancelBtn;
 
 //creating the database
 let projects = ['Work', 'Study', 'Gym']
+let tasksArr = []
 
 
 
@@ -165,10 +169,10 @@ function handlingTheNewBtns(div) {
 function fillingTheLowerSidebar(projects) {
   projects.forEach((project) => {
     let projectDiv = document.createElement('div')
-    projectDiv.classList.add('lower-item')
+    projectDiv.classList.add('lower-item', 'lower-sidebar-item')
     projectDiv.innerHTML =
       `<img src="images/burger-bar.png" alt="icon not found" class= 'pencil' />
-    <div class="item-name">${project}</div>
+    <div class="item-name ">${project}</div>
     <img
       src="images/more options.png"
       alt="not found"
@@ -230,3 +234,115 @@ newProjectBtn.addEventListener('click', () => {
   }
 })
 
+
+
+
+
+
+
+
+
+//handling the new task form
+
+let mainSection = document.querySelector('.main-section')
+let bannerReferenceNode = document.querySelector('.banner')
+let addNewTaskBtnFlag = 0
+
+
+
+
+
+
+
+let addNewTaskBtn = document.querySelector('.add-new-task')
+let formDiv = document.createElement('div');
+
+
+function handlingTheAddNewTaskBtn(directoryName) {
+  addNewTaskBtn.addEventListener('click', () => {
+
+    console.log(directoryName)
+
+    if (addNewTaskBtnFlag == 0) {
+
+      addNewTaskBtnFlag = 1;
+      formDiv.classList.add('task-section')
+      formDiv.innerHTML =
+        `<div class="task-input-form">
+      <div class="div-task-title div-flex">
+      <label for="task-title">Title:</label>
+      <input
+      type="text"
+      id="task-title"
+      placeholder="What to do?"
+      required
+      />
+      </div>
+      <label for="task-details">Details(optional):</label>
+      <textarea
+      placeholder="Mushkil waqt Commando sakht!"
+      class="div-task-details div-flex"
+      rows="5"
+      ></textarea>
+      
+      <div class="div-task-deadline div-flex">
+      <label for="task-deadline">Date:</label>
+      <input type="date" id="task-deadline" />
+      </div>
+      <div class="button-section-task-input-form">
+      <button class="btn1" id="add-button-task-input-form">Add</button>
+      <button class="btn2" id="cancel-button-task-input-form">
+      Cancel
+      </button>
+      </div>
+      </div>`
+      bannerReferenceNode.after(formDiv)
+
+    }
+
+    //handling the add btn
+    let addButtonTaskInputForm = document.querySelector('#add-button-task-input-form')
+    let taskTitle = document.querySelector('#task-title')
+    let TaskDetails = document.querySelector('.div-task-details')
+    let TaskDeadline = document.querySelector('#task-deadline')
+
+    addButtonTaskInputForm.addEventListener('click', () => {
+      let taskTitleVal = taskTitle.value
+      let TaskDetailsVal = TaskDetails.value
+      let TaskDeadlineVal = TaskDeadline.value
+
+      // console.log(divTaskDeadlineVal)
+      let task = new Tasks(directoryName, taskTitleVal, TaskDetailsVal, TaskDeadlineVal)
+      tasksArr.push(task)
+      console.log(tasksArr)
+    })
+
+    //handling the cancel btn
+    let cancelButtonTaskInputForm = document.querySelector('#cancel-button-task-input-form')
+    cancelButtonTaskInputForm.addEventListener('click', () => {
+      formDiv.remove()
+      addNewTaskBtnFlag = 0
+    })
+  })
+}
+
+
+let lowerSidebarItems = document.querySelectorAll('.lower-sidebar-item')
+
+lowerSidebarItems.forEach((item) => {
+  item.addEventListener('click', () => {
+    addNewTaskBtn.style.display = 'flex'
+    // formDiv.style.display = 'none'
+    handlingTheAddNewTaskBtn(item.querySelector('.item-name').innerHTML)
+  })
+
+})
+
+addNewTaskBtn.style.display = 'none'
+let upperSidebarItems = document.querySelectorAll('.upper-sidebar-item')
+
+upperSidebarItems.forEach((item) => {
+  item.addEventListener('click', () => {
+    addNewTaskBtn.style.display = 'none'
+  })
+})
