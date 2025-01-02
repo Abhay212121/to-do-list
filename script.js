@@ -253,19 +253,15 @@ let addNewTaskBtnFlag = 0
 
 
 
-
 let addNewTaskBtn = document.querySelector('.add-new-task')
 let formDiv = document.createElement('div');
 
 
-function handlingTheAddNewTaskBtn(directoryName) {
+function handlingTheAddNewTaskBtn() {
   addNewTaskBtn.addEventListener('click', () => {
 
-    console.log(directoryName)
-
     if (addNewTaskBtnFlag == 0) {
-
-      addNewTaskBtnFlag = 1;
+      formDiv = document.createElement('div');
       formDiv.classList.add('task-section')
       formDiv.innerHTML =
         `<div class="task-input-form">
@@ -296,44 +292,53 @@ function handlingTheAddNewTaskBtn(directoryName) {
       </button>
       </div>
       </div>`
-      bannerReferenceNode.after(formDiv)
+      addTaskBtnReferenceNode.before(formDiv)
 
+
+      addNewTaskBtnFlag = 1;
+      //handling the add btn
+      let addButtonTaskInputForm = document.querySelector('#add-button-task-input-form')
+      let taskTitle = document.querySelector('#task-title')
+      let TaskDetails = document.querySelector('.div-task-details')
+      let TaskDeadline = document.querySelector('#task-deadline')
+
+      addButtonTaskInputForm.addEventListener('click', () => {
+        let taskTitleVal = taskTitle.value
+        let TaskDetailsVal = TaskDetails.value
+        let TaskDeadlineVal = TaskDeadline.value
+        let directoryName = selectedDiv.querySelector('.item-name').innerHTML
+        let task = new Tasks(directoryName, taskTitleVal, TaskDetailsVal, TaskDeadlineVal)
+        tasksArr.push(task)
+        formDiv.remove()
+        clearingTheResultDiv()
+        tempArr = tasksArr.filter((element) => element.project == selectedDiv.querySelector('.item-name').innerHTML)
+        generatingTasks(tempArr)
+      })
+
+      //handling the cancel btn
+      let cancelButtonTaskInputForm = document.querySelector('#cancel-button-task-input-form')
+      cancelButtonTaskInputForm.addEventListener('click', () => {
+        formDiv.remove()
+        addNewTaskBtnFlag = 0
+      })
     }
-
-    //handling the add btn
-    let addButtonTaskInputForm = document.querySelector('#add-button-task-input-form')
-    let taskTitle = document.querySelector('#task-title')
-    let TaskDetails = document.querySelector('.div-task-details')
-    let TaskDeadline = document.querySelector('#task-deadline')
-
-    addButtonTaskInputForm.addEventListener('click', () => {
-      let taskTitleVal = taskTitle.value
-      let TaskDetailsVal = TaskDetails.value
-      let TaskDeadlineVal = TaskDeadline.value
-
-      // console.log(divTaskDeadlineVal)
-      let task = new Tasks(directoryName, taskTitleVal, TaskDetailsVal, TaskDeadlineVal)
-      tasksArr.push(task)
-      console.log(tasksArr)
-    })
-
-    //handling the cancel btn
-    let cancelButtonTaskInputForm = document.querySelector('#cancel-button-task-input-form')
-    cancelButtonTaskInputForm.addEventListener('click', () => {
-      formDiv.remove()
-      addNewTaskBtnFlag = 0
-    })
   })
 }
 
+let tempArr;
 
 let lowerSidebarItems = document.querySelectorAll('.lower-sidebar-item')
 
 lowerSidebarItems.forEach((item) => {
   item.addEventListener('click', () => {
+    clearingTheResultDiv()
     addNewTaskBtn.style.display = 'flex'
-    // formDiv.style.display = 'none'
-    handlingTheAddNewTaskBtn(item.querySelector('.item-name').innerHTML)
+    formDiv.remove()
+    addNewTaskBtnFlag = 0
+    tempArr = tasksArr.filter((element) => element.project == selectedDiv.querySelector('.item-name').innerHTML)
+    console.log(tempArr)
+    generatingTasks(tempArr)
+    handlingTheAddNewTaskBtn()
   })
 
 })
@@ -346,3 +351,54 @@ upperSidebarItems.forEach((item) => {
     addNewTaskBtn.style.display = 'none'
   })
 })
+
+
+
+
+let addTaskBtnReferenceNode = document.querySelector('.add-new-task')
+let resultDiv = document.createElement('div')
+
+function generatingTasks(newArray) {
+  resultDiv.remove()
+  newArray.forEach((item) => {
+    resultDiv = document.createElement('div')
+    if (item.date == '') {
+      item.date = 'No Due Date'
+    }
+    resultDiv.classList.add('form-output')
+    resultDiv.innerHTML =
+      `<div class="left-of-form-output">
+    <input type="checkbox" id="task-checkbox" />
+    <div class="task-title-and-task-description-display">
+    <p class="form-output-title-display">${item.title}</p>
+    <p class="form-output-description-display">${item.details}</p>
+    </div>
+    </div>
+    <div class="right-of-form-output">
+    <div class="date">${item.date}</div>
+    <img
+    src="images/new-star.png"
+    alt="star not found"
+    class="new-star"
+    />
+    <img
+    src="images/more options.png"
+    alt="more options icon"
+    class="more-options-form-output"
+    />
+    </div>`
+    addTaskBtnReferenceNode.before(resultDiv)
+    addNewTaskBtnFlag = 0
+  })
+}
+
+function clearingTheResultDiv() {
+  console.log('hey')
+  let formOutputSection = document.querySelectorAll('.form-output')
+  formOutputSection.forEach((item) => {
+    console.log('hey')
+    item.remove()
+  })
+}
+
+
