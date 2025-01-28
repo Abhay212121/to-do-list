@@ -1,10 +1,24 @@
 export default class Tasks {
-    constructor(project, title, details, date, favFlag = false) {
+    constructor(project, title, details, date, favFlag = false, icon = 'new-star', flagImg = "images/new-star.png") {
         this.project = project;
         this.title = title;
         this.details = details;
         this.date = date;
         this.favFlag = favFlag;
+        this.icon = icon;
+        this.flagImg = flagImg
+    }
+
+    calculateTimeInms() {
+        let newDate = new Date(this.date)
+        let newTime = newDate.getTime()
+        return newTime
+    }
+
+    calculateDate() {
+        let newDate = new Date(this.date)
+        newDate = newDate.toISOString().split('T')[0]
+        return newDate
     }
 }
 

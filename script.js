@@ -1,5 +1,5 @@
-import Tasks from './main.js'
-
+import Tasks from './main.js';
+import { formatDistance, subDays, differenceInDays, format } from "./node_modules/date-fns/index.js";
 
 let listItems = document.querySelectorAll('.item')
 let bannerHead = document.querySelector('.banner-head')
@@ -23,11 +23,8 @@ let projects = ['Work', 'Study', 'Gym']
 let tasksArr = []
 
 
-
-
 selectingTheListItemsFunc(selectedDiv.textContent)
 fillingTheLowerSidebar(projects);
-
 
 
 listItems.forEach((item) => {
@@ -111,8 +108,6 @@ function moreOptionsBtnFunc() {
 
         let cancelBtn = document.querySelector('.cancel-btn')
         cancelBtn.addEventListener('click', () => {
-          console.log(renameAndCancelBox)
-          console.log(temp)
           renameAndCancelBox.replaceWith(temp)
         })
 
@@ -158,6 +153,7 @@ function handlingTheNewBtns(div) {
     resetingTheLowerSidebar()
     fillingTheLowerSidebar(projects)
     div.remove()
+    addingFunctionalitiesInLowerSidebar()
   })
   cancelBtn.addEventListener('click', () => {
     newProjectBtnCount = 1
@@ -219,7 +215,6 @@ burgerBtn.addEventListener('click', () => {
 
 //removing the dropbox
 document.addEventListener('click', () => {
-  // console.log(dropboxDiv)
   if (dropboxDiv != undefined) {
     dropboxDiv.remove()
   }
@@ -253,19 +248,15 @@ let addNewTaskBtnFlag = 0
 
 
 
-
 let addNewTaskBtn = document.querySelector('.add-new-task')
 let formDiv = document.createElement('div');
 
 
-function handlingTheAddNewTaskBtn(directoryName) {
+function handlingTheAddNewTaskBtn() {
   addNewTaskBtn.addEventListener('click', () => {
 
-    console.log(directoryName)
-
     if (addNewTaskBtnFlag == 0) {
-
-      addNewTaskBtnFlag = 1;
+      formDiv = document.createElement('div');
       formDiv.classList.add('task-section')
       formDiv.innerHTML =
         `<div class="task-input-form">
@@ -296,47 +287,59 @@ function handlingTheAddNewTaskBtn(directoryName) {
       </button>
       </div>
       </div>`
-      bannerReferenceNode.after(formDiv)
+      addTaskBtnReferenceNode.before(formDiv)
 
+
+      addNewTaskBtnFlag = 1;
+      //handling the add btn
+      let addButtonTaskInputForm = document.querySelector('#add-button-task-input-form')
+      let taskTitle = document.querySelector('#task-title')
+      let TaskDetails = document.querySelector('.div-task-details')
+      let TaskDeadline = document.querySelector('#task-deadline')
+
+      addButtonTaskInputForm.addEventListener('click', () => {
+        let taskTitleVal = taskTitle.value
+        let TaskDetailsVal = TaskDetails.value
+        let TaskDeadlineVal = TaskDeadline.value
+        let directoryName = selectedDiv.querySelector('.item-name').innerHTML
+        let task = new Tasks(directoryName, taskTitleVal, TaskDetailsVal, TaskDeadlineVal)
+        tasksArr.push(task)
+        formDiv.remove()
+        clearingTheResultDiv()
+        tempArr = tasksArr.filter((element) => element.project == selectedDiv.querySelector('.item-name').innerHTML)
+        generatingTasks(tempArr)
+      })
+
+      //handling the cancel btn
+      let cancelButtonTaskInputForm = document.querySelector('#cancel-button-task-input-form')
+      cancelButtonTaskInputForm.addEventListener('click', () => {
+        formDiv.remove()
+        addNewTaskBtnFlag = 0
+      })
     }
-
-    //handling the add btn
-    let addButtonTaskInputForm = document.querySelector('#add-button-task-input-form')
-    let taskTitle = document.querySelector('#task-title')
-    let TaskDetails = document.querySelector('.div-task-details')
-    let TaskDeadline = document.querySelector('#task-deadline')
-
-    addButtonTaskInputForm.addEventListener('click', () => {
-      let taskTitleVal = taskTitle.value
-      let TaskDetailsVal = TaskDetails.value
-      let TaskDeadlineVal = TaskDeadline.value
-
-      // console.log(divTaskDeadlineVal)
-      let task = new Tasks(directoryName, taskTitleVal, TaskDetailsVal, TaskDeadlineVal)
-      tasksArr.push(task)
-      console.log(tasksArr)
-    })
-
-    //handling the cancel btn
-    let cancelButtonTaskInputForm = document.querySelector('#cancel-button-task-input-form')
-    cancelButtonTaskInputForm.addEventListener('click', () => {
-      formDiv.remove()
-      addNewTaskBtnFlag = 0
-    })
   })
 }
 
+let tempArr;
 
 let lowerSidebarItems = document.querySelectorAll('.lower-sidebar-item')
 
-lowerSidebarItems.forEach((item) => {
-  item.addEventListener('click', () => {
-    addNewTaskBtn.style.display = 'flex'
-    // formDiv.style.display = 'none'
-    handlingTheAddNewTaskBtn(item.querySelector('.item-name').innerHTML)
-  })
+addingFunctionalitiesInLowerSidebar()
+function addingFunctionalitiesInLowerSidebar() {
+  lowerSidebarItems = document.querySelectorAll('.lower-sidebar-item')
+  lowerSidebarItems.forEach((item) => {
+    item.addEventListener('click', () => {
+      clearingTheResultDiv()
+      addNewTaskBtn.style.display = 'flex'
+      formDiv.remove()
+      addNewTaskBtnFlag = 0
+      tempArr = tasksArr.filter((element) => element.project == selectedDiv.querySelector('.item-name').innerHTML)
+      generatingTasks(tempArr)
+      handlingTheAddNewTaskBtn()
+    })
 
-})
+  })
+}
 
 addNewTaskBtn.style.display = 'none'
 let upperSidebarItems = document.querySelectorAll('.upper-sidebar-item')
@@ -346,3 +349,141 @@ upperSidebarItems.forEach((item) => {
     addNewTaskBtn.style.display = 'none'
   })
 })
+
+
+
+
+let addTaskBtnReferenceNode = document.querySelector('.add-new-task')
+let resultDiv = document.createElement('div')
+
+function generatingTasks(newArray) {
+  resultDiv.remove()
+  newArray.forEach((item) => {
+    resultDiv = document.createElement('div')
+    if (item.date == '') {
+      item.date = 'No Due Date'
+    }
+    resultDiv.classList.add('form-output')
+    resultDiv.innerHTML =
+      `<div class="left-of-form-output">
+    <input type="checkbox" id="task-checkbox" />
+    <div class="task-title-and-task-description-display">
+    <p class="form-output-title-display">${item.title}</p>
+    <p class="form-output-description-display">${item.details}</p>
+    </div>
+    </div>
+    <div class="right-of-form-output">
+    <div class="date">${item.date}</div>
+    <img
+    src=${item.flagImg}
+    alt="star not found"
+    class="new-star"
+    />
+    <img
+    src="images/more options.png"
+    alt="more options icon"
+    class="more-options-form-output"
+    />
+    </div>`
+    addTaskBtnReferenceNode.before(resultDiv)
+    addNewTaskBtnFlag = 0
+    handlingTheStarBtn()
+  })
+}
+
+function clearingTheResultDiv() {
+  let formOutputSection = document.querySelectorAll('.form-output')
+  formOutputSection.forEach((item) => {
+    item.remove()
+  })
+}
+
+
+//handling the star btn
+function handlingTheStarBtn() {
+  let outputBox = document.querySelectorAll('.form-output')
+  outputBox.forEach((temp) => {
+    temp.addEventListener('click', (e) => {
+      e.stopPropagation()
+      let starBtn = temp.lastElementChild.getElementsByTagName('img')[0]
+      starBtn.addEventListener('click', (e) => {
+        e.stopImmediatePropagation()
+        starBtnFunc(temp)
+      })
+    })
+  })
+}
+
+function starBtnFunc(taskItem) {
+  console.log(taskItem)
+  console.log(tasksArr)
+  if (taskItem.favFlag == false) {
+    console.log('false')
+    taskItem.favFlag = true;
+    taskItem.flagImg = "images/glowing-star.png"
+  }
+
+  else if (taskItem.favFlag == true) {
+    console.log('true')
+    taskItem.favFlag = false
+    taskItem.flagImg = "images/new-star.png"
+  }
+}
+
+
+
+upperSidebarItems.forEach((item) => {
+  item.addEventListener('click', () => {
+    clearingTheResultDiv()
+
+    let today = new Date()
+    today = today.toISOString().split('T')[0]
+
+    const tempDailyArr = tasksArr.filter((element) => {
+      console.log(today)
+      console.log(element.calculateDate())
+      if (element.calculateDate() == today) {
+        return element
+      }
+    })
+
+    const tempWeeklyArr = tasksArr.filter((element) => {
+      if ((differenceInDays(element.calculateDate(), today) < 7) && (differenceInDays(element.calculateDate(), today) >= 0)) {
+        return element
+      }
+
+      // let todayArr = today.split('-')
+      // console.log(todayArr)
+
+      // let taskDateArr = element.calculateDate().split('-')
+      // console.log(taskDateArr)
+
+
+
+    })
+
+    let tempName = item.querySelector('.item-name').textContent
+    if (tempName == 'All Tasks') {
+      generatingTasks(tasksArr)
+    }
+
+    else if (tempName == 'Today') {
+      generatingTasks(tempDailyArr)
+    }
+
+    else if (tempName == 'Next 7 Days') {
+      generatingTasks(tempWeeklyArr)
+    }
+
+    else if (tempName == 'Important') {
+      const tempArr = tasksArr.filter((element) => {
+        console.log(element)
+        if (element.favFlag == true) {
+          return element
+        }
+      })
+      generatingTasks(tempArr)
+    }
+  })
+})
+

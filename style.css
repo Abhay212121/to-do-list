@@ -36,13 +36,13 @@
 }
 
 .section{
-    height: 95vh;
+    min-height: 95vh;
     background-color: #ECECEC;
 }
 
 .sidebar{
     width: 30%;
-    height: 100%;
+    min-height: 100%;
     background-color: #FEFCFE;
     padding: 1rem;
 }
@@ -376,4 +376,72 @@
 
 .add-new-task img{
     height: 1.15rem;
+}
+
+
+.form-output{
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid black;
+    padding: 0.4rem 1rem;
+    border-radius: 4px;
+}
+
+.left-of-form-output,.right-of-form-output{
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.right-of-form-output img{
+ height: 4vh;   
+ padding: 0.3rem;
+}
+
+.new-star{
+    padding: 0.2rem;
+}
+
+.date{
+    border: 1px solid black;
+    padding: 0.5rem;
+    border-radius: 20% ;
+}
+
+#task-checkbox{
+    width: 0.9rem;
+    height: 0.9rem;
+    background-color: white;
+    border-radius: 50%;
+    border: 2px solid black;
+    appearance: none;
+    -webkit-appearance: none;
+    outline: none;
+    cursor: pointer;
+}
+
+#task-checkbox:checked{
+    background-color: gray;
+}
+
+.task-title-and-task-description-display{
+    width: 53vw;
+}
+
+.form-output-title-display{
+    font-size: 1.2rem;
+    text-transform: capitalize;
+}
+
+.form-output-description-display{
+    font-size: 1rem;
+    font-weight: 400;
+}
+
+.new-star:hover,.more-options-form-output:hover{
+    background-color: rgb(193, 189, 189);
+    border-radius: 5px;
+    cursor: pointer;
 }
