@@ -300,14 +300,17 @@ function handlingTheAddNewTaskBtn() {
       addButtonTaskInputForm.addEventListener('click', () => {
         let taskTitleVal = taskTitle.value
         let TaskDetailsVal = TaskDetails.value
-        let TaskDeadlineVal = TaskDeadline.value
-        let directoryName = selectedDiv.querySelector('.item-name').innerHTML
-        let task = new Tasks(directoryName, taskTitleVal, TaskDetailsVal, TaskDeadlineVal)
-        tasksArr.push(task)
-        formDiv.remove()
-        clearingTheResultDiv()
-        tempArr = tasksArr.filter((element) => element.project == selectedDiv.querySelector('.item-name').innerHTML)
-        generatingTasks(tempArr)
+        if (taskTitleVal != '' && TaskDetailsVal != '') {
+
+          let TaskDeadlineVal = TaskDeadline.value
+          let directoryName = selectedDiv.querySelector('.item-name').innerHTML
+          let task = new Tasks(directoryName, taskTitleVal, TaskDetailsVal, TaskDeadlineVal)
+          tasksArr.push(task)
+          formDiv.remove()
+          clearingTheResultDiv()
+          tempArr = tasksArr.filter((element) => element.project == selectedDiv.querySelector('.item-name').innerHTML)
+          generatingTasks(tempArr)
+        }
       })
 
       //handling the cancel btn
@@ -380,7 +383,7 @@ function generatingTasks(newArray) {
     class="new-star"
     />
     <img
-    src="images/more options.png"
+    src="images/delete.png"
     alt="more options icon"
     class="more-options-form-output"
     />
@@ -388,6 +391,7 @@ function generatingTasks(newArray) {
     addTaskBtnReferenceNode.before(resultDiv)
     addNewTaskBtnFlag = 0
     handlingTheStarBtn()
+    handlingTheDeleteBtn()
   })
 }
 
@@ -403,20 +407,25 @@ function clearingTheResultDiv() {
 function handlingTheStarBtn() {
   let outputBox = document.querySelectorAll('.form-output')
   outputBox.forEach((temp) => {
-    temp.addEventListener('click', (e) => {
-      e.stopPropagation()
-      let starBtn = temp.lastElementChild.getElementsByTagName('img')[0]
-      starBtn.addEventListener('click', (e) => {
-        e.stopImmediatePropagation()
-        starBtnFunc(temp)
+    let starBtn = temp.lastElementChild.getElementsByTagName('img')[0]
+    starBtn.addEventListener('click', () => {
+      let tempTitle = temp.querySelector('.form-output-title-display').innerHTML
+      let tempDesc = temp.querySelector('.form-output-description-display').innerHTML.slice(0, 5)
+      let tempId = tempTitle.toString() + tempDesc.toString()
+
+      tasksArr.forEach((element) => {
+        if (tempId == element.calculateId()) {
+          starBtnFunc(element)
+        }
       })
     })
   })
+
+
+
 }
 
 function starBtnFunc(taskItem) {
-  console.log(taskItem)
-  console.log(tasksArr)
   if (taskItem.favFlag == false) {
     console.log('false')
     taskItem.favFlag = true;
@@ -435,13 +444,12 @@ function starBtnFunc(taskItem) {
 upperSidebarItems.forEach((item) => {
   item.addEventListener('click', () => {
     clearingTheResultDiv()
+    formDiv.remove()
 
     let today = new Date()
     today = today.toISOString().split('T')[0]
 
     const tempDailyArr = tasksArr.filter((element) => {
-      console.log(today)
-      console.log(element.calculateDate())
       if (element.calculateDate() == today) {
         return element
       }
@@ -451,18 +459,10 @@ upperSidebarItems.forEach((item) => {
       if ((differenceInDays(element.calculateDate(), today) < 7) && (differenceInDays(element.calculateDate(), today) >= 0)) {
         return element
       }
-
-      // let todayArr = today.split('-')
-      // console.log(todayArr)
-
-      // let taskDateArr = element.calculateDate().split('-')
-      // console.log(taskDateArr)
-
-
-
     })
 
     let tempName = item.querySelector('.item-name').textContent
+
     if (tempName == 'All Tasks') {
       generatingTasks(tasksArr)
     }
@@ -483,7 +483,45 @@ upperSidebarItems.forEach((item) => {
         }
       })
       generatingTasks(tempArr)
+      let outputBox = document.querySelectorAll('.form-output')
+      outputBox.forEach((temp) => {
+        let starBtn = temp.lastElementChild.getElementsByTagName('img')[0]
+        starBtn.addEventListener('click', () => {
+          clearingTheResultDiv()
+          generatingTasks(tempArr)
+          starBtn.removeEventListener()
+        })
+      })
     }
   })
 })
 
+
+
+
+
+
+
+
+
+
+//deleting the tasks
+function handlingTheDeleteBtn() {
+  let outputBox = document.querySelectorAll('.form-output')
+  outputBox.forEach((temp) => {
+    let delBtn = temp.lastElementChild.getElementsByTagName('img')[1]
+    delBtn.addEventListener('click', () => {
+      let tempTitle = temp.querySelector('.form-output-title-display').innerHTML
+      let tempDesc = temp.querySelector('.form-output-description-display').innerHTML.slice(0, 5)
+      let tempId = tempTitle.toString() + tempDesc.toString()
+      tasksArr.forEach((element, index) => {
+        if (tempId == element.calculateId()) {
+          tasksArr.splice(index, 1);
+          clearingTheResultDiv()
+          tempArr = tasksArr.filter((element) => element.project == selectedDiv.querySelector('.item-name').innerHTML)
+          generatingTasks(tempArr)
+        }
+      })
+    })
+  })
+}

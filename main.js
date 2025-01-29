@@ -16,9 +16,16 @@ export default class Tasks {
     }
 
     calculateDate() {
-        let newDate = new Date(this.date)
-        newDate = newDate.toISOString().split('T')[0]
-        return newDate
+        if (this.date != 'No Due Date') {
+            let newDate = new Date(this.date)
+            newDate = newDate.toISOString().split('T')[0]
+            return newDate
+        }
+    }
+
+    calculateId() {
+        let id = this.title + this.details.slice(0, 5)
+        return id
     }
 }
 
