@@ -326,7 +326,6 @@ function handlingTheAddNewTaskBtn() {
 let tempArr;
 
 let lowerSidebarItems = document.querySelectorAll('.lower-sidebar-item')
-
 addingFunctionalitiesInLowerSidebar()
 function addingFunctionalitiesInLowerSidebar() {
   lowerSidebarItems = document.querySelectorAll('.lower-sidebar-item')
