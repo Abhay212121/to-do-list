@@ -99,7 +99,7 @@ function moreOptionsBtnFunc() {
         //new two buttons
         let renameBtn = document.querySelector('.rename-btn')
         renameBtn.addEventListener('click', () => {
-          renameInputboxValue = document.querySelector('#rename-project-inputbox').value
+          let renameInputboxValue = document.querySelector('#rename-project-inputbox').value
           const index = projects.indexOf(projectName);
           projects[index] = renameInputboxValue
           resetingTheLowerSidebar()
@@ -300,12 +300,13 @@ function handlingTheAddNewTaskBtn() {
       addButtonTaskInputForm.addEventListener('click', () => {
         let taskTitleVal = taskTitle.value
         let TaskDetailsVal = TaskDetails.value
-        if (taskTitleVal != '' && TaskDetailsVal != '') {
+        if (taskTitleVal != '' || TaskDetailsVal != '') {
 
           let TaskDeadlineVal = TaskDeadline.value
           let directoryName = selectedDiv.querySelector('.item-name').innerHTML
-          let task = new Tasks(directoryName, taskTitleVal, TaskDetailsVal, TaskDeadlineVal)
+          let task = new Tasks(count, directoryName, taskTitleVal, TaskDetailsVal, TaskDeadlineVal)
           tasksArr.push(task)
+          count++
           formDiv.remove()
           clearingTheResultDiv()
           tempArr = tasksArr.filter((element) => element.project == selectedDiv.querySelector('.item-name').innerHTML)
@@ -323,6 +324,7 @@ function handlingTheAddNewTaskBtn() {
   })
 }
 
+let count = 0;
 let tempArr;
 
 let lowerSidebarItems = document.querySelectorAll('.lower-sidebar-item')
@@ -359,6 +361,8 @@ let addTaskBtnReferenceNode = document.querySelector('.add-new-task')
 let resultDiv = document.createElement('div')
 
 function generatingTasks(newArray) {
+  console.log(newArray, 'new')
+  console.log(tasksArr)
   resultDiv.remove()
   newArray.forEach((item) => {
     resultDiv = document.createElement('div')
@@ -368,29 +372,134 @@ function generatingTasks(newArray) {
     resultDiv.classList.add('form-output')
     resultDiv.innerHTML =
       `<div class="left-of-form-output">
-    <input type="checkbox" id="task-checkbox" />
-    <div class="task-title-and-task-description-display">
-    <p class="form-output-title-display">${item.title}</p>
-    <p class="form-output-description-display">${item.details}</p>
-    </div>
-    </div>
-    <div class="right-of-form-output">
-    <div class="date">${item.date}</div>
-    <img
-    src=${item.flagImg}
-    alt="star not found"
-    class="new-star"
-    />
-    <img
-    src="images/delete.png"
-    alt="more options icon"
-    class="more-options-form-output"
-    />
-    </div>`
+      <input type="checkbox" id="task-checkbox" />
+      <div class="task-title-and-task-description-display">
+
+      <p class="form-output-title-display ${(item.completed) ? 'completed' : ''}">${item.title}</p>
+      <p class="form-output-description-display ${(item.completed) ? 'completed' : ''}">${item.details}</p>
+      
+      </div>
+      </div>
+      <div class="right-of-form-output">
+      <div class="date">${item.date}</div>
+      <img
+      src=${item.flagImg}
+      alt="star not found"
+      class="new-star"
+      />
+      <img
+      src="images/delete.png"
+      alt="more options icon"
+      class="more-options-form-output"
+      />
+      </div>`
     addTaskBtnReferenceNode.before(resultDiv)
     addNewTaskBtnFlag = 0
-    handlingTheStarBtn()
-    handlingTheDeleteBtn()
+
+
+    let checkbox = resultDiv.querySelector('#task-checkbox')
+    let starBtn = resultDiv.querySelector('.new-star')
+    let delBtn = resultDiv.querySelector('.more-options-form-output')
+
+    let title = resultDiv.querySelector('.form-output-title-display')
+    let desc = resultDiv.querySelector('.form-output-description-display')
+
+    let tempArr = tasksArr.filter((element) => element.project == selectedDiv.querySelector('.item-name').innerHTML)
+
+    //handling the checked functionality
+    checkbox.addEventListener('click', () => {
+
+      title.classList.toggle('completed')
+      desc.classList.toggle('completed')
+      tasksArr[item.id].completed = !tasksArr[item.id].completed
+      clearingTheResultDiv()
+      // generatingTasks(tempArr)
+
+      if (selectedDiv.querySelector('.item-name').innerHTML == 'All Tasks') {
+        console.log('hii')
+        generatingTasks(tasksArr)
+      }
+
+      else if (selectedDiv.querySelector('.item-name').innerHTML == 'Today') {
+        todayData()
+      }
+
+      else if (selectedDiv.querySelector('.item-name').innerHTML == 'Next 7 Days') {
+        weekData()
+      }
+      else if (selectedDiv.querySelector('.item-name').innerHTML == 'Important') {
+        favData()
+      }
+      else {
+        generatingTasks(tempArr)
+      }
+
+    })
+
+    //handling the star btn functionality
+    starBtn.addEventListener('click', () => {
+
+      tempArr = tasksArr.filter((element) => element.project == selectedDiv.querySelector('.item-name').innerHTML)
+      console.log(tasksArr)
+
+      if (!item.favFlag) {
+        item.flagImg = "images/glowing-star.png"
+        item.favFlag = true;
+      }
+
+      else {
+        item.flagImg = "images/new-star.png"
+        item.favFlag = false
+        console.log('by')
+      }
+
+      clearingTheResultDiv()
+      // generatingTasks(tempArr)
+
+      if (selectedDiv.querySelector('.item-name').innerHTML == 'All Tasks') {
+        generatingTasks(tasksArr)
+      }
+
+      else if (selectedDiv.querySelector('.item-name').innerHTML == 'Today') {
+        todayData()
+      }
+
+      else if (selectedDiv.querySelector('.item-name').innerHTML == 'Next 7 Days') {
+        weekData()
+      }
+      else if (selectedDiv.querySelector('.item-name').innerHTML == 'Important') {
+        favData()
+      }
+      else {
+        generatingTasks(tempArr)
+      }
+    })
+
+    // handlingTheDeleteBtn()
+    delBtn.addEventListener('click', () => {
+      tasksArr = tasksArr.filter(element => element.id != item.id)
+      tempArr = tasksArr.filter((element) => element.project == selectedDiv.querySelector('.item-name').innerHTML)
+      clearingTheResultDiv()
+      // generatingTasks(tempArr)
+
+      if (selectedDiv.querySelector('.item-name').innerHTML == 'All Tasks') {
+        generatingTasks(tasksArr)
+      }
+
+      else if (selectedDiv.querySelector('.item-name').innerHTML == 'Today') {
+        todayData()
+      }
+
+      else if (selectedDiv.querySelector('.item-name').innerHTML == 'Next 7 Days') {
+        weekData()
+      }
+      else if (selectedDiv.querySelector('.item-name').innerHTML == 'Important') {
+        favData()
+      }
+      else {
+        generatingTasks(tempArr)
+      }
+    })
   })
 }
 
@@ -402,63 +511,10 @@ function clearingTheResultDiv() {
 }
 
 
-//handling the star btn
-function handlingTheStarBtn() {
-  let outputBox = document.querySelectorAll('.form-output')
-  outputBox.forEach((temp) => {
-    let starBtn = temp.lastElementChild.getElementsByTagName('img')[0]
-    starBtn.addEventListener('click', () => {
-      let tempTitle = temp.querySelector('.form-output-title-display').innerHTML
-      let tempDesc = temp.querySelector('.form-output-description-display').innerHTML.slice(0, 5)
-      let tempId = tempTitle.toString() + tempDesc.toString()
-
-      tasksArr.forEach((element) => {
-        if (tempId == element.calculateId()) {
-          starBtnFunc(element)
-        }
-      })
-    })
-  })
-
-
-
-}
-
-function starBtnFunc(taskItem) {
-  if (taskItem.favFlag == false) {
-    console.log('false')
-    taskItem.favFlag = true;
-    taskItem.flagImg = "images/glowing-star.png"
-  }
-
-  else if (taskItem.favFlag == true) {
-    console.log('true')
-    taskItem.favFlag = false
-    taskItem.flagImg = "images/new-star.png"
-  }
-}
-
-
-
 upperSidebarItems.forEach((item) => {
   item.addEventListener('click', () => {
     clearingTheResultDiv()
     formDiv.remove()
-
-    let today = new Date()
-    today = today.toISOString().split('T')[0]
-
-    const tempDailyArr = tasksArr.filter((element) => {
-      if (element.calculateDate() == today) {
-        return element
-      }
-    })
-
-    const tempWeeklyArr = tasksArr.filter((element) => {
-      if ((differenceInDays(element.calculateDate(), today) < 7) && (differenceInDays(element.calculateDate(), today) >= 0)) {
-        return element
-      }
-    })
 
     let tempName = item.querySelector('.item-name').textContent
 
@@ -467,60 +523,58 @@ upperSidebarItems.forEach((item) => {
     }
 
     else if (tempName == 'Today') {
-      generatingTasks(tempDailyArr)
+      todayData()
     }
 
     else if (tempName == 'Next 7 Days') {
-      generatingTasks(tempWeeklyArr)
+      weekData()
     }
 
     else if (tempName == 'Important') {
-      const tempArr = tasksArr.filter((element) => {
-        console.log(element)
-        if (element.favFlag == true) {
-          return element
-        }
-      })
-      generatingTasks(tempArr)
+      favData()
       let outputBox = document.querySelectorAll('.form-output')
       outputBox.forEach((temp) => {
         let starBtn = temp.lastElementChild.getElementsByTagName('img')[0]
         starBtn.addEventListener('click', () => {
           clearingTheResultDiv()
-          generatingTasks(tempArr)
-          starBtn.removeEventListener()
+          favData()
         })
       })
     }
   })
 })
 
+function todayData() {
+  let today = new Date()
+  today = today.toISOString().split('T')[0]
 
-
-
-
-
-
-
-
-
-//deleting the tasks
-function handlingTheDeleteBtn() {
-  let outputBox = document.querySelectorAll('.form-output')
-  outputBox.forEach((temp) => {
-    let delBtn = temp.lastElementChild.getElementsByTagName('img')[1]
-    delBtn.addEventListener('click', () => {
-      let tempTitle = temp.querySelector('.form-output-title-display').innerHTML
-      let tempDesc = temp.querySelector('.form-output-description-display').innerHTML.slice(0, 5)
-      let tempId = tempTitle.toString() + tempDesc.toString()
-      tasksArr.forEach((element, index) => {
-        if (tempId == element.calculateId()) {
-          tasksArr.splice(index, 1);
-          clearingTheResultDiv()
-          tempArr = tasksArr.filter((element) => element.project == selectedDiv.querySelector('.item-name').innerHTML)
-          generatingTasks(tempArr)
-        }
-      })
-    })
+  const tempDailyArr = tasksArr.filter((element) => {
+    if (element.calculateDate() == today) {
+      return element
+    }
   })
+
+  generatingTasks(tempDailyArr)
+}
+
+function weekData() {
+  let today = new Date()
+  today = today.toISOString().split('T')[0]
+
+  const tempWeeklyArr = tasksArr.filter((element) => {
+    if ((differenceInDays(element.calculateDate(), today) < 7) && (differenceInDays(element.calculateDate(), today) >= 0)) {
+      return element
+    }
+  })
+
+  generatingTasks(tempWeeklyArr)
+}
+
+function favData() {
+  const tempArr = tasksArr.filter((element) => {
+    if (element.favFlag == true) {
+      return element
+    }
+  })
+  generatingTasks(tempArr)
 }
