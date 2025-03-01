@@ -361,8 +361,6 @@ let addTaskBtnReferenceNode = document.querySelector('.add-new-task')
 let resultDiv = document.createElement('div')
 
 function generatingTasks(newArray) {
-  console.log(newArray, 'new')
-  console.log(tasksArr)
   resultDiv.remove()
   newArray.forEach((item) => {
     resultDiv = document.createElement('div')
@@ -416,7 +414,6 @@ function generatingTasks(newArray) {
       // generatingTasks(tempArr)
 
       if (selectedDiv.querySelector('.item-name').innerHTML == 'All Tasks') {
-        console.log('hii')
         generatingTasks(tasksArr)
       }
 
@@ -440,7 +437,6 @@ function generatingTasks(newArray) {
     starBtn.addEventListener('click', () => {
 
       tempArr = tasksArr.filter((element) => element.project == selectedDiv.querySelector('.item-name').innerHTML)
-      console.log(tasksArr)
 
       if (!item.favFlag) {
         item.flagImg = "images/glowing-star.png"
@@ -450,7 +446,6 @@ function generatingTasks(newArray) {
       else {
         item.flagImg = "images/new-star.png"
         item.favFlag = false
-        console.log('by')
       }
 
       clearingTheResultDiv()
