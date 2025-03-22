@@ -17,5 +17,6 @@ export default class Tasks {
             newDate = newDate.toISOString().split('T')[0]
             return newDate
         }
+        return -1
     }
 }

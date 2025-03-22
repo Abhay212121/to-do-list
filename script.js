@@ -1,5 +1,4 @@
 import Tasks from './main.js';
-import { formatDistance, subDays, differenceInDays, format } from "./node_modules/date-fns/index.js";
 
 let listItems = document.querySelectorAll('.item')
 let bannerHead = document.querySelector('.banner-head')
@@ -69,6 +68,9 @@ function moreOptionsBtnFunc() {
         resetingTheLowerSidebar()
         fillingTheLowerSidebar(projects)
         selectingTheListItemsFunc()
+        clearingTheResultDiv()
+        tempArr = tasksArr.filter((element) => element.project == selectedDiv.querySelector('.item-name').innerHTML)
+        generatingTasks(tempArr)
       })
 
       let dropBoxRenameBtn = document.querySelector('.edit-btn')
@@ -557,8 +559,25 @@ function weekData() {
   today = today.toISOString().split('T')[0]
 
   const tempWeeklyArr = tasksArr.filter((element) => {
-    if ((differenceInDays(element.calculateDate(), today) < 7) && (differenceInDays(element.calculateDate(), today) >= 0)) {
-      return element
+    let todayDateArr = today.split('-')
+    let taskDateArr = element.calculateDate().split('-')
+
+    if (todayDateArr[0] == taskDateArr[0]) {
+      if (todayDateArr[1] == taskDateArr[1]) {
+        if (taskDateArr[2] - todayDateArr[2] >= 0 && taskDateArr[2] - todayDateArr[2] < 7) {
+          return element
+        }
+      }
+      else {
+        if ((taskDateArr[2] + +30) - todayDateArr[2] >= 0 && (taskDateArr[2] + +30) - todayDateArr[2] < 7) {
+          return element
+        }
+      }
+    }
+    else {
+      if ((taskDateArr[2] + +365 + 30) - (todayDateArr[2] + +365) >= 0 && (taskDateArr[2] + +365 + 30) - (todayDateArr[2] + +365) < 7) {
+        return element
+      }
     }
   })
 
